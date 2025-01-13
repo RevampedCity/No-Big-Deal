@@ -225,21 +225,23 @@ local boxesToggle = d:CreateToggle({
 })
 
 local decalToggle = d:CreateToggle({
-    Text = "Display 💿 Above Disk",
+    Text = "💿 Above Disk",
     Default = false,
     Callback = function(state)
         if state then
             local function addDecal(diskPart)
                 if diskPart and diskPart:IsA("Part") then
+                    -- Create the BillboardGui
                     local textLabel = Instance.new("BillboardGui")
                     textLabel.Adornee = diskPart
-                    textLabel.Size = UDim2.new(0, 100, 0, 50)
-                    textLabel.StudsOffset = Vector3.new(0, diskPart.Size.Y / 2 + 1, 0)
+                    textLabel.Size = UDim2.new(0, 100, 0, 50)  -- Adjust the size if needed
+                    textLabel.StudsOffset = Vector3.new(0, diskPart.Size.Y / 2 + 1, 0)  -- Position above the disk
                     textLabel.AlwaysOnTop = true
                     textLabel.Parent = diskPart
 
+                    -- Create the TextLabel
                     local label = Instance.new("TextLabel")
-                    label.Text = "💿"
+                    label.Text = "💿"  -- The text to display
                     label.Size = UDim2.new(1, 0, 1, 0)
                     label.TextScaled = true
                     label.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -248,10 +250,12 @@ local decalToggle = d:CreateToggle({
                 end
             end
 
+            -- Try to find the "Disk" part in the workspace
             local diskPart = game.Workspace:FindFirstChild("Disk")
             if diskPart then
                 addDecal(diskPart)
             else
+                -- If the "Disk" part is not already in the workspace, wait for it to be added
                 game.Workspace.ChildAdded:Connect(function(child)
                     if child.Name == "Disk" then
                         addDecal(child)
@@ -259,6 +263,7 @@ local decalToggle = d:CreateToggle({
                 end)
             end
         else
+            -- When the toggle is turned off, remove the decal from the "Disk"
             local diskPart = game.Workspace:FindFirstChild("Disk")
             if diskPart then
                 local textLabel = diskPart:FindFirstChildOfClass("BillboardGui")
@@ -268,83 +273,7 @@ local decalToggle = d:CreateToggle({
             end
         end
     end
-})
+}) 
 
-local function MovePlayer(distance)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    humanoidRootPart.Position = humanoidRootPart.Position + Vector3.new(0, distance, 0)
-end
 
-e:CreateButton({
-    Text = "Move Up",
-    Callback = function()
-        MovePlayer(5)
-    end
-})
 
-e:CreateButton({
-    Text = "Move Down",
-    Callback = function()
-        MovePlayer(-5)
-    end
-})
-
-local function CreateLadder()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    local ladderHeight = 10
-    local ladderWidth = 2
-    local ladderDepth = 1
-    local ladderPosition = humanoidRootPart.Position + humanoidRootPart.CFrame.LookVector * 5
-
-    local ladder = Instance.new("Model")
-    ladder.Name = "Ladder"
-    ladder.Parent = workspace
-
-    for i = 1, ladderHeight do
-        local step = Instance.new("Part")
-        step.Size = Vector3.new(ladderWidth, 1, ladderDepth)
-        step.Anchored = true
-        step.Position = ladderPosition + Vector3.new(0, i * ladderDepth, 0)
-        step.BrickColor = BrickColor.new("Bright blue")
-        step.Material = Enum.Material.SmoothPlastic
-        step.Parent = ladder
-    end
-end
-
-local function CreateFloorCovering()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    local floorWidth = 1000
-    local floorLength = 1000
-    local floorHeight = 1
-    local floorPosition = humanoidRootPart.Position - Vector3.new(0, humanoidRootPart.Position.Y, 0)
-
-    local floorPart = Instance.new("Part")
-    floorPart.Size = Vector3.new(floorWidth, floorHeight, floorLength)
-    floorPart.Anchored = true
-    floorPart.Position = floorPosition
-    floorPart.BrickColor = BrickColor.new("Bright green")
-    floorPart.Material = Enum.Material.SmoothPlastic
-    floorPart.Parent = workspace
-end
-
-e:CreateButton({
-    Text = "Place Ladder",
-    Callback = function()
-        CreateLadder()
-    end
-})
-
-e:CreateButton({
-    Text = "Place Floor",
-    Callback = function()
-        CreateFloorCovering()
-    end
-})
