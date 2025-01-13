@@ -23,11 +23,15 @@ local function k(l, m, n)
     end
 end
 
+local toggleStates = {}
+
 local function createToggle(tab, text, itemList, color, transparency)
+    toggleStates[text] = false
     return tab:CreateToggle({
         Text = text, 
         Default = false,
         Callback = function(state)
+            toggleStates[text] = state -- Store the toggle state
             if state then
                 k(itemList, color, transparency)
             else
@@ -49,23 +53,24 @@ local disguiseSuitToggle = createToggle(c, "Disguise Suit", {"DisguiseSuit"}, Co
 local grenadesToggle = createToggle(c, "Grenades", {"Grenade", "ExplosionAsset"}, Color3.fromRGB(255, 0, 0), 0.5)
 
 workspace.ChildAdded:Connect(function(B)
-    -- Modify here to ignore unwanted parts like walls or certain items
     if B:IsA("Part") then
-        if importantItemsToggle and (B.Name == "Briefcase" or B.Name == "Disk" or B.Name == "Cash") then
+        if toggleStates["Important Items"] and (B.Name == "Briefcase" or B.Name == "Disk" or B.Name == "Cash") then
             f(B, Color3.fromRGB(255, 165, 0), 0.5)
-        elseif weaponsToggle and table.find({"MP5", "AK47", "AceCarbine", "DB", "Deagle", "MAGNUM", "Pistol", "Snub", "Sniper"}, B.Name) then
+        elseif toggleStates["Weapons"] and table.find({"MP5", "AK47", "AceCarbine", "DB", "Deagle", "MAGNUM", "Pistol", "Snub", "Sniper"}, B.Name) then
             f(B, Color3.fromRGB(0, 0, 255), 0.5)
-        elseif ammoToggle and table.find({"MP5Mag", "PistolMag", "MagnumRound", "MAC10MAG", "AceMag", "AKMag", "Bullet2", "SnubCylinder"}, B.Name) then
+        elseif toggleStates["Ammo"] and table.find({"MP5Mag", "PistolMag", "MagnumRound", "MAC10MAG", "AceMag", "AKMag", "Bullet2", "SnubCylinder"}, B.Name) then
             f(B, Color3.fromRGB(173, 216, 230), 0.5)
-        elseif fakeCashToggle and B.Name == "FakeCash" then
+        elseif toggleStates["Fake Cash"] and B.Name == "FakeCash" then
             f(B, Color3.fromRGB(255, 0, 0), 0.5)
-        elseif disguiseSuitToggle and B.Name == "DisguiseSuit" then
+        elseif toggleStates["Disguise Suit"] and B.Name == "DisguiseSuit" then
             f(B, Color3.fromRGB(255, 255, 0), 0.5)
-        elseif grenadesToggle and table.find({"Grenade", "ExplosionAsset"}, B.Name) then
+        elseif toggleStates["Grenades"] and table.find({"Grenade", "ExplosionAsset"}, B.Name) then
             f(B, Color3.fromRGB(255, 0, 0), 0.5)
         end
     end
 end)
+
+
 
 local deleteEnabled = false
 local deletedParts = {}
@@ -274,6 +279,3 @@ local decalToggle = d:CreateToggle({
         end
     end
 }) 
-
-
-
