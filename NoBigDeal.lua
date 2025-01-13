@@ -54,18 +54,33 @@ local grenadesToggle = createToggle(c, "Grenades", {"Grenade", "ExplosionAsset"}
 
 workspace.ChildAdded:Connect(function(B)
     if B:IsA("Part") then
+        local isHighlighted = false
         if toggleStates["Important Items"] and (B.Name == "Briefcase" or B.Name == "Disk" or B.Name == "Cash") then
             f(B, Color3.fromRGB(255, 165, 0), 0.5)
+            isHighlighted = true
         elseif toggleStates["Weapons"] and table.find({"MP5", "AK47", "AceCarbine", "DB", "Deagle", "MAGNUM", "Pistol", "Snub", "Sniper"}, B.Name) then
             f(B, Color3.fromRGB(0, 0, 255), 0.5)
+            isHighlighted = true
         elseif toggleStates["Ammo"] and table.find({"MP5Mag", "PistolMag", "MagnumRound", "MAC10MAG", "AceMag", "AKMag", "Bullet2", "SnubCylinder"}, B.Name) then
             f(B, Color3.fromRGB(173, 216, 230), 0.5)
+            isHighlighted = true
         elseif toggleStates["Fake Cash"] and B.Name == "FakeCash" then
             f(B, Color3.fromRGB(255, 0, 0), 0.5)
+            isHighlighted = true
         elseif toggleStates["Disguise Suit"] and B.Name == "DisguiseSuit" then
             f(B, Color3.fromRGB(255, 255, 0), 0.5)
+            isHighlighted = true
         elseif toggleStates["Grenades"] and table.find({"Grenade", "ExplosionAsset"}, B.Name) then
             f(B, Color3.fromRGB(255, 0, 0), 0.5)
+            isHighlighted = true
+        end
+        
+        -- Now check if a Highlight was applied or not
+        if not isHighlighted then
+            -- If it wasn't highlighted and had an existing Highlight, remove it
+            if B:FindFirstChildOfClass("Highlight") then
+                B.Highlight:Destroy()
+            end
         end
     end
 end)
