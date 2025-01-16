@@ -236,28 +236,6 @@ e:CreateToggle({
     end
 })
 
-local function SpawnBaseplateAtPosition(position)
-    local baseplate = Instance.new("Part")
-    baseplate.Size = Vector3.new(10000000, 1, 10000000)
-    baseplate.Position = position
-    baseplate.Anchored = true
-    baseplate.CanCollide = true
-    baseplate.Parent = game.Workspace
-    baseplate.BrickColor = BrickColor.new("Bright blue")
-    baseplate.Material = Enum.Material.Concrete
-end
-
-e:CreateButton({
-    Text = "Floor Fix",
-    Callback = function()
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-        SpawnBaseplateAtPosition(humanoidRootPart.Position + Vector3.new(0, -10.9, 0))
-        SpawnBaseplateAtPosition(Vector3.new(0, 0, 0))
-    end
-})
-
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = game.Workspace.CurrentCamera
@@ -349,54 +327,3 @@ local boxesToggle = d:CreateToggle({
         toggleESP(state)
     end
 })
-
-local decalToggle = d:CreateToggle({
-    Text = "💿 Above Disk",
-    Default = false,
-    Callback = function(state)
-        if state then
-            local function addDecal(diskPart)
-                if diskPart and diskPart:IsA("Part") then
-                    -- Create the BillboardGui
-                    local textLabel = Instance.new("BillboardGui")
-                    textLabel.Adornee = diskPart
-                    textLabel.Size = UDim2.new(0, 100, 0, 50)  -- Adjust the size if needed
-                    textLabel.StudsOffset = Vector3.new(0, diskPart.Size.Y / 2 + 1, 0)  -- Position above the disk
-                    textLabel.AlwaysOnTop = true
-                    textLabel.Parent = diskPart
-
-                    -- Create the TextLabel
-                    local label = Instance.new("TextLabel")
-                    label.Text = "💿"  -- The text to display
-                    label.Size = UDim2.new(1, 0, 1, 0)
-                    label.TextScaled = true
-                    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    label.BackgroundTransparency = 1
-                    label.Parent = textLabel
-                end
-            end
-
-            -- Try to find the "Disk" part in the workspace
-            local diskPart = game.Workspace:FindFirstChild("Disk")
-            if diskPart then
-                addDecal(diskPart)
-            else
-                -- If the "Disk" part is not already in the workspace, wait for it to be added
-                game.Workspace.ChildAdded:Connect(function(child)
-                    if child.Name == "Disk" then
-                        addDecal(child)
-                    end
-                end)
-            end
-        else
-            -- When the toggle is turned off, remove the decal from the "Disk"
-            local diskPart = game.Workspace:FindFirstChild("Disk")
-            if diskPart then
-                local textLabel = diskPart:FindFirstChildOfClass("BillboardGui")
-                if textLabel then
-                    textLabel:Destroy()
-                end
-            end
-        end
-    end
-}) 
