@@ -1,3 +1,110 @@
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+
+local buildings = {
+    {
+        name = "Bergmann",
+        position = Vector3.new(715.705383, 283.882843, 519.359497),
+        orientation = CFrame.new(
+            715.705383, 283.882843, 519.359497,
+            0.0867670774, -0.00766775012, 0.996199131,
+            0.992413282, -0.0867670774, -0.0871051848,
+            0.0871051848, 0.996199131, 8.10623169e-05
+        )
+    },
+    {
+        name = "Alamont",
+        position = Vector3.new(-446.889099, 213.742462, 708.361633),
+        orientation = CFrame.new(
+            -446.889099, 213.742462, 708.361633,
+            0.0867670774, -0.00766775012, 0.996199131,
+            0.992413282, -0.0867670774, -0.0871051848,
+            0.0871051848, 0.996199131, 8.10623169e-05
+        )
+    },
+    {
+        name = "Halfwell",
+        position = Vector3.new(674.047119, 344.903564, -1254.74316),
+        orientation = CFrame.new(
+            674.047119, 344.903564, -1254.74316,
+            -0.996191859, -0.0871884301, 0,
+            -0.0871884301, 0.996191859, 0,
+            0, 0, -1
+        )
+    }
+}
+
+local heightOffset = 5
+local leftOffset = -15
+local fontWeight = Enum.FontWeight.SemiBold
+local fontStyle = Enum.FontStyle.Normal
+local textColor = Color3.fromRGB(70, 255, 49)
+local outlineColor = Color3.fromRGB(0, 0, 0)
+
+local function createBillboard(building)
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Size = UDim2.new(0, 100, 0, 25)
+    billboardGui.AlwaysOnTop = true
+    billboardGui.Adornee = nil
+    billboardGui.StudsOffset = Vector3.new(leftOffset, heightOffset, 0)
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = building.name
+    textLabel.FontFace = Font.new(
+        "rbxasset://fonts/families/TitilliumWeb.json",
+        fontWeight,
+        fontStyle
+    )
+    textLabel.TextColor3 = textColor
+    textLabel.TextScaled = false
+    textLabel.TextSize = 25
+    textLabel.TextStrokeColor3 = outlineColor
+    textLabel.TextStrokeTransparency = 0
+    textLabel.Parent = billboardGui
+
+    local attachment = Instance.new("Attachment")
+    attachment.WorldPosition = building.position
+    attachment.WorldCFrame = building.orientation
+    attachment.Parent = workspace.Terrain
+
+    billboardGui.Adornee = attachment
+    billboardGui.Parent = workspace.Terrain
+end
+
+local function createTextAboveDisk()
+    local disk = workspace:FindFirstChild("Disk")
+    if disk then
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Size = UDim2.new(0, 100, 0, 25)
+        billboardGui.AlwaysOnTop = true
+        billboardGui.StudsOffset = Vector3.new(0, 5, 0)
+
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = "Disk"
+        textLabel.Font = Enum.Font.TitilliumWeb
+        textLabel.TextColor3 = Color3.fromRGB(70, 255, 49)
+        textLabel.TextStrokeColor3 = outlineColor
+        textLabel.TextStrokeTransparency = 0
+        textLabel.Parent = billboardGui
+
+        billboardGui.Adornee = disk
+        billboardGui.Parent = disk
+    end
+end
+
+for _, building in ipairs(buildings) do
+    createBillboard(building)
+end
+
+createTextAboveDisk()
+
 local a = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Dialga156b/Summit_UI-Library/main/source.lua')))()
 local b = a:CreateWindow({Name = "Revamped.City", AccentColor3 = Color3.new(0.678, 0.847, 0.902)})
 local c = b:CreateTab({Name = "Highlights", Icon = 'rbxassetid://7743875962'})
